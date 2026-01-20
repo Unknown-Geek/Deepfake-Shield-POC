@@ -4,6 +4,7 @@ import { AlertTriangle, LogOut } from 'lucide-react'
 import Layout from './components/Layout'
 import Login from './components/Login'
 import PlayerDashboard from './components/PlayerDashboard'
+import AdminDashboard from './components/AdminDashboard'
 import { UserProvider, useUser } from './context/UserContext'
 import { ToastProvider, useToast } from './components/Toast'
 import { initDatabase } from './db'
@@ -102,18 +103,11 @@ function AppContent() {
     )
   }
 
-  // Admin dashboard (placeholder for now)
+  // Admin dashboard with family monitoring
   return (
     <Layout activeTab="home">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between mb-6"
-      >
-        <div>
-          <p className="text-muted text-sm">Admin Panel</p>
-          <h1 className="text-xl font-semibold">{user.username}</h1>
-        </div>
+      {/* Logout button in header */}
+      <div className="absolute top-6 right-4">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -122,17 +116,11 @@ function AppContent() {
         >
           <LogOut size={18} />
         </motion.button>
-      </motion.div>
-
-      <div className="glass rounded-3xl p-6 text-center">
-        <div className="text-4xl mb-4">👑</div>
-        <h2 className="text-lg font-medium mb-2">Admin Dashboard</h2>
-        <p className="text-sm text-muted">
-          Admin features coming soon. You have full access to manage users and view analytics.
-        </p>
       </div>
+      <AdminDashboard />
     </Layout>
   )
 }
 
 export default App
+
