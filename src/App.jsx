@@ -5,6 +5,7 @@ import Layout from './components/Layout'
 import Login from './components/Login'
 import PlayerDashboard from './components/PlayerDashboard'
 import AdminDashboard from './components/AdminDashboard'
+import AdminHome from './components/AdminHome'
 import Scanner from './components/Scanner'
 import { UserProvider, useUser } from './context/UserContext'
 import { ToastProvider, useToast } from './components/Toast'
@@ -119,7 +120,7 @@ function AppContent() {
         return isAdmin ? <AdminDashboard /> : <PlayerDashboard />
       case 'home':
       default:
-        return isAdmin ? <AdminDashboard /> : <PlayerDashboard />
+        return isAdmin ? <AdminHome /> : <PlayerDashboard />
     }
   }
 
