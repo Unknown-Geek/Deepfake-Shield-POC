@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, Upload, CheckCircle, AlertTriangle, LogOut } from 'lucide-react'
+import { AlertTriangle, LogOut } from 'lucide-react'
 import Layout from './components/Layout'
 import Login from './components/Login'
+import PlayerDashboard from './components/PlayerDashboard'
 import { UserProvider, useUser } from './context/UserContext'
 import { ToastProvider, useToast } from './components/Toast'
 import { initDatabase } from './db'
@@ -57,7 +58,7 @@ function App() {
 }
 
 function AppContent() {
-  const { user, isLoading, isAuthenticated, logout } = useUser()
+  const { user, isLoading, isAuthenticated, isAdmin, logout } = useUser()
   const toast = useToast()
 
   if (isLoading) {
@@ -81,23 +82,12 @@ function AppContent() {
     toast.info('Logged out successfully')
   }
 
-  return (
-    <Layout activeTab="home">
-      {/* Header with user info */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between mb-6"
-      >
-        <div>
-          <p className="text-muted text-sm">Welcome back,</p>
-          <h1 className="text-xl font-semibold">{user.username}</h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="glass rounded-2xl px-4 py-2">
-            <span className="text-success font-medium">{user.coins}</span>
-            <span className="text-muted text-sm ml-1">coins</span>
-          </div>
+  // Show PlayerDashboard for player users
+  if (!isAdmin) {
+    return (
+      <Layout activeTab="home">
+        {/* Logout button in header */}
+        <div className="absolute top-6 right-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -107,94 +97,40 @@ function AppContent() {
             <LogOut size={18} />
           </motion.button>
         </div>
-      </motion.div>
+        <PlayerDashboard />
+      </Layout>
+    )
+  }
 
-      {/* Streak Badge */}
-      {user.streak > 0 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-2xl p-3 mb-4 flex items-center gap-3"
-        >
-          <div className="text-2xl">🔥</div>
-          <div>
-            <p className="text-sm font-medium">{user.streak} Day Streak!</p>
-            <p className="text-xs text-muted">Keep scanning to maintain it</p>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Upload Card */}
+  // Admin dashboard (placeholder for now)
+  return (
+    <Layout activeTab="home">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="glass rounded-3xl p-6 mb-4"
+        className="flex items-center justify-between mb-6"
       >
-        <div className="flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
-            <Upload className="w-6 h-6 text-muted" />
-          </div>
-          <h2 className="text-lg font-medium mb-1">Analyze Media</h2>
-          <p className="text-muted text-sm mb-4">
-            Upload an image or video to detect potential deepfakes
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-3 px-4 bg-success/20 hover:bg-success/30 text-success rounded-2xl font-medium transition-colors"
-          >
-            Select File
-          </motion.button>
+        <div>
+          <p className="text-muted text-sm">Admin Panel</p>
+          <h1 className="text-xl font-semibold">{user.username}</h1>
         </div>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleLogout}
+          className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors"
+        >
+          <LogOut size={18} />
+        </motion.button>
       </motion.div>
 
-      {/* Status Cards */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="glass rounded-2xl p-4"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            <span className="text-xs font-medium text-success">Safe</span>
-          </div>
-          <p className="text-2xl font-semibold">24</p>
-          <p className="text-xs text-muted">Verified authentic</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="glass rounded-2xl p-4"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-4 h-4 text-danger" />
-            <span className="text-xs font-medium text-danger">Detected</span>
-          </div>
-          <p className="text-2xl font-semibold">3</p>
-          <p className="text-xs text-muted">Potential fakes</p>
-        </motion.div>
+      <div className="glass rounded-3xl p-6 text-center">
+        <div className="text-4xl mb-4">👑</div>
+        <h2 className="text-lg font-medium mb-2">Admin Dashboard</h2>
+        <p className="text-sm text-muted">
+          Admin features coming soon. You have full access to manage users and view analytics.
+        </p>
       </div>
-
-      {/* Role Badge */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="glass rounded-2xl p-4 text-center"
-      >
-        <p className="text-xs text-muted mb-1">Account Type</p>
-        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-xl text-sm font-medium ${user.role === 'admin'
-            ? 'bg-amber-500/20 text-amber-400'
-            : 'bg-blue-500/20 text-blue-400'
-          }`}>
-          {user.role === 'admin' ? '👑 Admin' : '🎮 Player'}
-        </span>
-      </motion.div>
     </Layout>
   )
 }
