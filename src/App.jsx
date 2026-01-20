@@ -1,34 +1,134 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, Upload, CheckCircle, AlertTriangle } from 'lucide-react'
+import { Shield, Upload, CheckCircle, AlertTriangle, LogOut } from 'lucide-react'
 import Layout from './components/Layout'
+import Login from './components/Login'
+import { UserProvider, useUser } from './context/UserContext'
+import { ToastProvider, useToast } from './components/Toast'
+import { initDatabase } from './db'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home')
+  const [dbReady, setDbReady] = useState(false)
+  const [dbError, setDbError] = useState(null)
+
+  // Initialize database on mount
+  useEffect(() => {
+    initDatabase()
+      .then(() => setDbReady(true))
+      .catch((err) => {
+        console.error('Failed to initialize database:', err)
+        setDbError(err.message)
+      })
+  }, [])
+
+  if (dbError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="glass rounded-3xl p-8 text-center max-w-sm">
+          <div className="w-12 h-12 rounded-2xl bg-danger/10 flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-6 h-6 text-danger" />
+          </div>
+          <h2 className="text-lg font-medium mb-2">Database Error</h2>
+          <p className="text-muted text-sm">{dbError}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!dbReady) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="w-8 h-8 border-2 border-success border-t-transparent rounded-full"
+        />
+      </div>
+    )
+  }
 
   return (
-    <Layout activeTab={activeTab}>
-      {/* Hero Section */}
+    <UserProvider>
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
+    </UserProvider>
+  )
+}
+
+function AppContent() {
+  const { user, isLoading, isAuthenticated, logout } = useUser()
+  const toast = useToast()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="w-8 h-8 border-2 border-success border-t-transparent rounded-full"
+        />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Login />
+  }
+
+  const handleLogout = () => {
+    logout()
+    toast.info('Logged out successfully')
+  }
+
+  return (
+    <Layout activeTab="home">
+      {/* Header with user info */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-8"
+        className="flex items-center justify-between mb-6"
       >
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-success/10 mb-4">
-          <Shield className="w-8 h-8 text-success" />
+        <div>
+          <p className="text-muted text-sm">Welcome back,</p>
+          <h1 className="text-xl font-semibold">{user.username}</h1>
         </div>
-        <h1 className="text-2xl font-semibold mb-2">Deepfake Shield</h1>
-        <p className="text-muted text-sm">
-          AI-powered protection against manipulated media
-        </p>
+        <div className="flex items-center gap-3">
+          <div className="glass rounded-2xl px-4 py-2">
+            <span className="text-success font-medium">{user.coins}</span>
+            <span className="text-muted text-sm ml-1">coins</span>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleLogout}
+            className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors"
+          >
+            <LogOut size={18} />
+          </motion.button>
+        </div>
       </motion.div>
+
+      {/* Streak Badge */}
+      {user.streak > 0 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass rounded-2xl p-3 mb-4 flex items-center gap-3"
+        >
+          <div className="text-2xl">🔥</div>
+          <div>
+            <p className="text-sm font-medium">{user.streak} Day Streak!</p>
+            <p className="text-xs text-muted">Keep scanning to maintain it</p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Upload Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        transition={{ delay: 0.1 }}
         className="glass rounded-3xl p-6 mb-4"
       >
         <div className="flex flex-col items-center text-center">
@@ -54,7 +154,7 @@ function App() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ delay: 0.2 }}
           className="glass rounded-2xl p-4"
         >
           <div className="flex items-center gap-2 mb-2">
@@ -68,7 +168,7 @@ function App() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ delay: 0.3 }}
           className="glass rounded-2xl p-4"
         >
           <div className="flex items-center gap-2 mb-2">
@@ -80,33 +180,20 @@ function App() {
         </motion.div>
       </div>
 
-      {/* Recent Activity */}
+      {/* Role Badge */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="glass rounded-2xl p-4"
+        transition={{ delay: 0.4 }}
+        className="glass rounded-2xl p-4 text-center"
       >
-        <h3 className="text-sm font-medium mb-3">Recent Activity</h3>
-        <div className="space-y-3">
-          {[
-            { name: 'video_interview.mp4', status: 'safe', time: '2 min ago' },
-            { name: 'profile_photo.jpg', status: 'danger', time: '15 min ago' },
-            { name: 'presentation.mp4', status: 'safe', time: '1 hour ago' },
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between py-2 border-b border-white/5 last:border-0"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${item.status === 'safe' ? 'bg-success' : 'bg-danger'
-                  }`} />
-                <span className="text-sm">{item.name}</span>
-              </div>
-              <span className="text-xs text-muted">{item.time}</span>
-            </div>
-          ))}
-        </div>
+        <p className="text-xs text-muted mb-1">Account Type</p>
+        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-xl text-sm font-medium ${user.role === 'admin'
+            ? 'bg-amber-500/20 text-amber-400'
+            : 'bg-blue-500/20 text-blue-400'
+          }`}>
+          {user.role === 'admin' ? '👑 Admin' : '🎮 Player'}
+        </span>
       </motion.div>
     </Layout>
   )
