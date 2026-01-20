@@ -4,6 +4,7 @@ import { Upload, Shield, ShieldCheck, ShieldAlert, Lock, RotateCcw, Sparkles } f
 import { cn } from '../lib/utils'
 import { addScanLog, updateUserCoins } from '../db'
 import { useUser } from '../context/UserContext'
+import { useStats } from '../context/StatsContext'
 import { useToast } from './Toast'
 
 // Scan phases with their display text
@@ -36,6 +37,7 @@ const REAL_REASONS = [
  */
 export default function Scanner() {
     const { user } = useUser()
+    const { refreshStats } = useStats()
     const toast = useToast()
     const fileInputRef = useRef(null)
 
@@ -145,6 +147,10 @@ export default function Scanner() {
             // Award coins for scanning
             const coinsEarned = isFake ? 15 : 10
             updateUserCoins(user.id, coinsEarned)
+
+            // Refresh stats in header (real-time update)
+            refreshStats()
+
             toast.success(`+${coinsEarned} coins earned!`)
         }
     }
