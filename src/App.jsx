@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AlertTriangle, LogOut, Coins, Flame } from 'lucide-react'
+import { cn } from './lib/utils'
 import Layout from './components/Layout'
 import Login from './components/Login'
 import PlayerDashboard from './components/PlayerDashboard'
@@ -153,32 +154,42 @@ function AppContent() {
       <Layout activeTab={activeTab} onTabChange={handleTabChange}>
         {/* Header with Stats and Logout */}
         <div className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between">
-          {/* Coins Display */}
+          {/* Coins Display - Smaller in Elderly Mode */}
           <motion.div
             key={coins}
             initial={{ scale: 1.2 }}
             animate={{ scale: 1 }}
-            className="glass rounded-2xl px-3 py-2 flex items-center gap-2"
+            className={cn(
+              "glass flex items-center gap-2",
+              isElderlyMode
+                ? "rounded-xl px-2 py-1 text-xs"
+                : "rounded-2xl px-3 py-2"
+            )}
           >
-            <Coins className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium">{coins}</span>
+            <Coins className={cn(isElderlyMode ? "w-3 h-3" : "w-4 h-4", "text-amber-400")} />
+            <span className={cn(isElderlyMode ? "text-xs" : "text-sm", "font-medium")}>{coins}</span>
             {streak > 0 && (
               <>
-                <div className="w-px h-4 bg-white/10" />
-                <Flame className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-medium">{streak}</span>
+                <div className={cn("w-px bg-white/10", isElderlyMode ? "h-3" : "h-4")} />
+                <Flame className={cn(isElderlyMode ? "w-3 h-3" : "w-4 h-4", "text-orange-400")} />
+                <span className={cn(isElderlyMode ? "text-xs" : "text-sm", "font-medium")}>{streak}</span>
               </>
             )}
           </motion.div>
 
-          {/* Logout Button */}
+          {/* Logout Button - More visible in Elderly Mode */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleLogout}
-            className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors backdrop-blur-md"
+            className={cn(
+              "rounded-2xl flex items-center justify-center transition-colors",
+              isElderlyMode
+                ? "w-9 h-9 bg-white/20 hover:bg-white/30 text-white backdrop-blur-xl"
+                : "w-10 h-10 bg-white/5 hover:bg-white/10 text-muted hover:text-foreground backdrop-blur-md"
+            )}
           >
-            <LogOut size={18} />
+            <LogOut size={isElderlyMode ? 16 : 18} />
           </motion.button>
         </div>
 
