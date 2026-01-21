@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, Coins, Flame, Shield, Award, Target, Zap, Eye, LogOut, ChevronRight } from 'lucide-react'
+import { User, Coins, Flame, Shield, Award, Target, Zap, Eye, LogOut, ChevronRight, Accessibility } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { getUserById, getScanLogsByUser } from '../db'
 import { useUser } from '../context/UserContext'
+import { useAccessibility } from '../context/AccessibilityContext'
 import { useToast } from './Toast'
 
 // Achievement definitions
@@ -22,6 +23,7 @@ const ACHIEVEMENTS = [
  */
 export default function Profile() {
     const { user, logout } = useUser()
+    const { isElderlyMode, toggleMode } = useAccessibility()
     const toast = useToast()
     const [stats, setStats] = useState({
         coins: 0,
@@ -209,6 +211,26 @@ export default function Profile() {
                         <p className="text-xs text-muted">Sign out of your account</p>
                     </div>
                     <ChevronRight className="w-5 h-5 text-muted" />
+                </button>
+
+                {/* Elderly Mode Toggle */}
+                <button
+                    onClick={toggleMode}
+                    className="w-full glass rounded-2xl p-4 flex items-center gap-3 hover:bg-white/5 transition-colors mt-3"
+                >
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                        <Accessibility className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div className="flex-1 text-left">
+                        <p className="text-sm font-medium">Elderly Mode</p>
+                        <p className="text-xs text-muted">
+                            {isElderlyMode ? 'Large buttons & text enabled' : 'Normal view for youth'}
+                        </p>
+                    </div>
+                    <div
+                        className={`toggle-switch ${isElderlyMode ? 'active' : ''}`}
+                        aria-label="Toggle Elderly Mode"
+                    />
                 </button>
             </motion.div>
         </div>

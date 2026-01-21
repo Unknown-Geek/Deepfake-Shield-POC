@@ -8,21 +8,23 @@
   --color-muted: #94a3b8;
   --color-success: #10b981;
   --color-danger: #f43f5e;
-  
+
   /* Extended palette */
   --color-card: rgba(255, 255, 255, 0.05);
   --color-card-border: rgba(255, 255, 255, 0.1);
-  
+
   /* Typography */
   --font-family-sans: 'Inter', 'Geist Sans', system-ui, -apple-system, sans-serif;
-  
+
   /* Radius */
   --radius-card: 1rem;
   --radius-button: 0.75rem;
 }
 
 /* Base Styles */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -84,4 +86,151 @@ a:hover {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* ============================================
+   ELDERLY MODE - Large buttons and text
+   Applied via .elderly-mode class on body
+   ============================================ */
+
+/* Base typography increases */
+.elderly-mode {
+  font-size: 1.125rem;
+  /* 18px base instead of 16px */
+  line-height: 1.7;
+}
+
+/* Larger headings */
+.elderly-mode h1 {
+  font-size: 1.75rem !important;
+  /* 28px */
+}
+
+.elderly-mode h2 {
+  font-size: 1.5rem !important;
+  /* 24px */
+}
+
+.elderly-mode h3 {
+  font-size: 1.25rem !important;
+  /* 20px */
+}
+
+/* Larger text for readability */
+.elderly-mode p,
+.elderly-mode span,
+.elderly-mode label {
+  font-size: 1.125rem;
+}
+
+/* Small text becomes normal sized */
+.elderly-mode .text-xs {
+  font-size: 0.9rem !important;
+}
+
+.elderly-mode .text-sm {
+  font-size: 1rem !important;
+}
+
+/* Larger buttons with increased touch targets */
+.elderly-mode button,
+.elderly-mode .btn-elderly {
+  min-height: 56px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+/* Extra large primary action buttons */
+.elderly-mode .btn-primary-elderly {
+  min-height: 64px;
+  padding: 1.25rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* Larger icons in elderly mode */
+.elderly-mode .icon-elderly {
+  width: 28px;
+  height: 28px;
+}
+
+/* Larger nav bar items */
+.elderly-mode nav button {
+  padding: 0.75rem 1rem !important;
+  min-height: 64px;
+}
+
+.elderly-mode nav svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.elderly-mode nav span {
+  font-size: 0.85rem !important;
+}
+
+/* Larger stat cards */
+.elderly-mode .stat-value {
+  font-size: 2rem !important;
+}
+
+/* Larger glass cards with more padding */
+.elderly-mode .glass {
+  padding: 1.25rem;
+}
+
+/* Larger input fields */
+.elderly-mode input,
+.elderly-mode select,
+.elderly-mode textarea {
+  min-height: 52px;
+  font-size: 1.125rem;
+  padding: 0.875rem 1rem;
+}
+
+/* Toggle switch for elderly mode */
+.toggle-switch {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.toggle-switch.active {
+  background: var(--color-success);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-switch.active::after {
+  transform: translateX(24px);
+}
+
+/* Elderly mode version - even bigger toggle */
+.elderly-mode .toggle-switch {
+  width: 64px;
+  height: 34px;
+}
+
+.elderly-mode .toggle-switch::after {
+  width: 28px;
+  height: 28px;
+}
+
+.elderly-mode .toggle-switch.active::after {
+  transform: translateX(30px);
 }

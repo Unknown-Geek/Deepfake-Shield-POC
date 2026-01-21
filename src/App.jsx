@@ -12,6 +12,7 @@ import Profile from './components/Profile'
 import { UserProvider, useUser } from './context/UserContext'
 import { ToastProvider, useToast } from './components/Toast'
 import { StatsProvider, useStats } from './context/StatsContext'
+import { AccessibilityProvider, useAccessibility } from './context/AccessibilityContext'
 import { initDatabase } from './db'
 
 /**
@@ -68,7 +69,9 @@ function App() {
     <UserProvider>
       <ToastProvider>
         <StatsProvider>
-          <AppContent />
+          <AccessibilityProvider>
+            <AppContent />
+          </AccessibilityProvider>
         </StatsProvider>
       </ToastProvider>
     </UserProvider>
@@ -82,6 +85,7 @@ function App() {
 function AppContent() {
   const { user, isLoading, isAuthenticated, isAdmin, logout } = useUser()
   const { coins, streak } = useStats()
+  const { isElderlyMode } = useAccessibility()
   const toast = useToast()
   const [activeTab, setActiveTab] = useState('home')
 
@@ -135,52 +139,54 @@ function AppContent() {
   }
 
   return (
-    <Layout activeTab={activeTab} onTabChange={handleTabChange}>
-      {/* Header with Stats and Logout */}
-      <div className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between">
-        {/* Coins Display */}
-        <motion.div
-          key={coins}
-          initial={{ scale: 1.2 }}
-          animate={{ scale: 1 }}
-          className="glass rounded-2xl px-3 py-2 flex items-center gap-2"
-        >
-          <Coins className="w-4 h-4 text-amber-400" />
-          <span className="text-sm font-medium">{coins}</span>
-          {streak > 0 && (
-            <>
-              <div className="w-px h-4 bg-white/10" />
-              <Flame className="w-4 h-4 text-orange-400" />
-              <span className="text-sm font-medium">{streak}</span>
-            </>
-          )}
-        </motion.div>
+    <div className={isElderlyMode ? 'elderly-mode' : ''}>
+      <Layout activeTab={activeTab} onTabChange={handleTabChange}>
+        {/* Header with Stats and Logout */}
+        <div className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between">
+          {/* Coins Display */}
+          <motion.div
+            key={coins}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            className="glass rounded-2xl px-3 py-2 flex items-center gap-2"
+          >
+            <Coins className="w-4 h-4 text-amber-400" />
+            <span className="text-sm font-medium">{coins}</span>
+            {streak > 0 && (
+              <>
+                <div className="w-px h-4 bg-white/10" />
+                <Flame className="w-4 h-4 text-orange-400" />
+                <span className="text-sm font-medium">{streak}</span>
+              </>
+            )}
+          </motion.div>
 
-        {/* Logout Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleLogout}
-          className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors backdrop-blur-md"
-        >
-          <LogOut size={18} />
-        </motion.button>
-      </div>
+          {/* Logout Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleLogout}
+            className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors backdrop-blur-md"
+          >
+            <LogOut size={18} />
+          </motion.button>
+        </div>
 
-      {/* Page Content with Transitions */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="pt-16"
-        >
-          {renderPage()}
-        </motion.div>
-      </AnimatePresence>
-    </Layout>
+        {/* Page Content with Transitions */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="pt-16"
+          >
+            {renderPage()}
+          </motion.div>
+        </AnimatePresence>
+      </Layout>
+    </div>
   )
 }
 
