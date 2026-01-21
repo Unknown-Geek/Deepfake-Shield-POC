@@ -39,6 +39,7 @@ export default function Profile() {
         safeScans: 0,
         fakesFound: 0,
     })
+    const [claimedRewards, setClaimedRewards] = useState(new Set())
 
     useEffect(() => {
         if (user?.id) {
@@ -213,11 +214,26 @@ export default function Profile() {
 
                     <div className="space-y-3">
                         {REWARDS.map((reward, index) => {
+                            const isClaimed = claimedRewards.has(reward.id)
                             const canAfford = stats.coins >= reward.cost
 
                             const handleClaim = () => {
-                                if (canAfford && user?.id) {
+                                if (!user?.id) return
+
+                                if (isClaimed) {
+                                    // Unclaim - add coins back
+                                    updateUserCoins(user.id, reward.cost)
+                                    setClaimedRewards(prev => {
+                                        const next = new Set(prev)
+                                        next.delete(reward.id)
+                                        return next
+                                    })
+                                    fetchStats()
+                                    toast.info(`Returned: ${reward.name}`)
+                                } else if (canAfford) {
+                                    // Claim - deduct coins
                                     updateUserCoins(user.id, -reward.cost)
+                                    setClaimedRewards(prev => new Set([...prev, reward.id]))
                                     fetchStats()
                                     toast.success(`🎉 Claimed: ${reward.name}!`)
                                 } else {
@@ -233,7 +249,8 @@ export default function Profile() {
                                     transition={{ delay: 0.4 + index * 0.05 }}
                                     className={cn(
                                         "glass rounded-2xl p-4 flex items-center gap-3",
-                                        `border-l-4 border-l-${reward.color}-500`
+                                        `border-l-4 border-l-${reward.color}-500`,
+                                        isClaimed && "ring-2 ring-success/50"
                                     )}
                                 >
                                     <div className={cn(
@@ -248,18 +265,24 @@ export default function Profile() {
                                     </div>
                                     <button
                                         onClick={handleClaim}
-                                        disabled={!canAfford}
+                                        disabled={!isClaimed && !canAfford}
                                         className={cn(
                                             "px-4 py-2 rounded-xl text-sm font-medium transition-all",
-                                            canAfford
-                                                ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
-                                                : "bg-white/5 text-muted cursor-not-allowed"
+                                            isClaimed
+                                                ? "bg-success/20 text-success hover:bg-danger/20 hover:text-danger"
+                                                : canAfford
+                                                    ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                                                    : "bg-white/5 text-muted cursor-not-allowed"
                                         )}
                                     >
-                                        <span className="flex items-center gap-1">
-                                            <Coins className="w-4 h-4" />
-                                            {reward.cost}
-                                        </span>
+                                        {isClaimed ? (
+                                            <span>Unclaim</span>
+                                        ) : (
+                                            <span className="flex items-center gap-1">
+                                                <Coins className="w-4 h-4" />
+                                                {reward.cost}
+                                            </span>
+                                        )}
                                     </button>
                                 </motion.div>
                             )
