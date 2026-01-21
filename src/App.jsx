@@ -160,19 +160,19 @@ function AppContent() {
             initial={{ scale: 1.2 }}
             animate={{ scale: 1 }}
             className={cn(
-              "glass flex items-center gap-2",
+              "flex items-center gap-1.5",
               isElderlyMode
-                ? "rounded-xl px-2 py-1 text-xs"
-                : "rounded-2xl px-3 py-2"
+                ? "bg-white/10 rounded-lg px-1.5 py-0.5 text-[10px]"
+                : "glass rounded-2xl px-3 py-2"
             )}
           >
-            <Coins className={cn(isElderlyMode ? "w-3 h-3" : "w-4 h-4", "text-amber-400")} />
-            <span className={cn(isElderlyMode ? "text-xs" : "text-sm", "font-medium")}>{coins}</span>
+            <Coins className={cn(isElderlyMode ? "w-2.5 h-2.5" : "w-4 h-4", "text-amber-400")} />
+            <span className={cn(isElderlyMode ? "text-[10px]" : "text-sm", "font-medium")}>{coins}</span>
             {streak > 0 && (
               <>
-                <div className={cn("w-px bg-white/10", isElderlyMode ? "h-3" : "h-4")} />
-                <Flame className={cn(isElderlyMode ? "w-3 h-3" : "w-4 h-4", "text-orange-400")} />
-                <span className={cn(isElderlyMode ? "text-xs" : "text-sm", "font-medium")}>{streak}</span>
+                <div className={cn("w-px bg-white/20", isElderlyMode ? "h-2" : "h-4")} />
+                <Flame className={cn(isElderlyMode ? "w-2.5 h-2.5" : "w-4 h-4", "text-orange-400")} />
+                <span className={cn(isElderlyMode ? "text-[10px]" : "text-sm", "font-medium")}>{streak}</span>
               </>
             )}
           </motion.div>
