@@ -65,12 +65,13 @@ function seedDatabase() {
   `)
 
     // Insert 5 scan logs for Grandma (user_id = 2)
+    // Seed scan logs pushed back 7+ days so real scans appear first
     const scanLogs = [
-        { result: 'safe', confidence: 95.5, reason: 'No manipulation detected', daysAgo: 0 },
-        { result: 'fake', confidence: 87.2, reason: 'Face swap artifacts detected', daysAgo: 1 },
-        { result: 'safe', confidence: 99.1, reason: 'Original media verified', daysAgo: 2 },
-        { result: 'uncertain', confidence: 52.3, reason: 'Low quality source material', daysAgo: 3 },
-        { result: 'safe', confidence: 91.8, reason: 'No audio manipulation detected', daysAgo: 5 },
+        { result: 'safe', confidence: 95.5, reason: 'No manipulation detected', daysAgo: 7 },
+        { result: 'fake', confidence: 87.2, reason: 'Face swap artifacts detected', daysAgo: 8 },
+        { result: 'safe', confidence: 99.1, reason: 'Original media verified', daysAgo: 10 },
+        { result: 'uncertain', confidence: 52.3, reason: 'Low quality source material', daysAgo: 12 },
+        { result: 'safe', confidence: 91.8, reason: 'No audio manipulation detected', daysAgo: 14 },
     ]
 
     scanLogs.forEach((log) => {
