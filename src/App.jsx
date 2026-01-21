@@ -177,19 +177,19 @@ function AppContent() {
             )}
           </motion.div>
 
-          {/* Logout Button - More visible in Elderly Mode */}
+          {/* Logout Button - Same size as stats in Elderly Mode */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleLogout}
             className={cn(
-              "rounded-2xl flex items-center justify-center transition-colors",
+              "flex items-center justify-center transition-colors",
               isElderlyMode
-                ? "w-9 h-9 bg-white/20 hover:bg-white/30 text-white backdrop-blur-xl"
-                : "w-10 h-10 bg-white/5 hover:bg-white/10 text-muted hover:text-foreground backdrop-blur-md"
+                ? "rounded-lg px-1.5 py-0.5 bg-white/10 hover:bg-white/20 text-white"
+                : "w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 text-muted hover:text-foreground backdrop-blur-md"
             )}
           >
-            <LogOut size={isElderlyMode ? 16 : 18} />
+            <LogOut size={isElderlyMode ? 10 : 18} />
           </motion.button>
         </div>
 
