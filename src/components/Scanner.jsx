@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Shield, ShieldCheck, ShieldAlert, Lock, RotateCcw, Sparkles } from 'lucide-react'
+import { Upload, Shield, ShieldCheck, ShieldAlert, Lock, RotateCcw, Sparkles, MessageCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { addScanLog, updateUserCoins } from '../db'
 import { useUser } from '../context/UserContext'
@@ -417,19 +417,44 @@ function ResultView({ result, fileName, onReset }) {
                 </motion.div>
             </motion.div>
 
-            {/* Scan Again Button */}
-            <motion.button
+            {/* Action Buttons */}
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onReset}
-                className="mt-6 flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+                className="mt-6 flex flex-col gap-3 w-full"
             >
-                <RotateCcw className="w-5 h-5" />
-                Scan Another
-            </motion.button>
+                {/* Chat with AI Button */}
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 transition-colors"
+                >
+                    <MessageCircle className="w-5 h-5" />
+                    Chat with AI
+                </motion.button>
+
+                {/* Report Wrong Prediction Button */}
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors"
+                >
+                    <AlertTriangle className="w-5 h-5" />
+                    Report Wrong Prediction
+                </motion.button>
+
+                {/* Scan Another Button */}
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={onReset}
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+                >
+                    <RotateCcw className="w-5 h-5" />
+                    Scan Another
+                </motion.button>
+            </motion.div>
         </motion.div>
     )
 }
