@@ -183,7 +183,7 @@ function AppContent() {
             whileTap={{ scale: 0.95 }}
             onClick={handleLogout}
             className={cn(
-              "flex items-center justify-center transition-colors",
+              "header-btn flex items-center justify-center transition-colors",
               isElderlyMode
                 ? "rounded-lg px-1.5 py-0.5 bg-white/10 hover:bg-white/20 text-white"
                 : "w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 text-muted hover:text-foreground backdrop-blur-md"

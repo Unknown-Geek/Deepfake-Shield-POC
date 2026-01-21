@@ -172,13 +172,27 @@ a:hover {
   padding: 1.5rem !important;
 }
 
-/* MUCH larger buttons - easy to tap */
-.elderly-mode button {
+/* MUCH larger buttons - easy to tap (except header/logout area and profile lists) */
+.elderly-mode button:not(.header-btn):not(.profile-action-btn) {
   min-height: 64px !important;
   padding: 1rem 1.5rem !important;
   font-size: 1.25rem !important;
   font-weight: 600 !important;
   border-radius: 1rem !important;
+}
+
+/* Header buttons should stay small */
+.elderly-mode .header-btn {
+  min-height: auto !important;
+  padding: 0.75rem 0.75rem !important;
+  font-size: 0.625rem !important;
+}
+
+/* Profile list buttons - moderate size */
+.elderly-mode .profile-action-btn {
+  min-height: auto !important;
+  padding: 1rem !important;
+  font-size: 1rem !important;
 }
 
 /* Primary action buttons - HUGE */
@@ -201,8 +215,8 @@ a:hover {
 }
 
 .elderly-mode nav>div {
-  background: #0d1424 !important;
-  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+  background: #000000 !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
   backdrop-filter: none !important;
 }
 
