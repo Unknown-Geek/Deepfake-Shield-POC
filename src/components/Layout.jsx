@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Home, Scan, Crown, History, User, Trophy } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useUser } from '../context/UserContext'
+import { useAccessibility } from '../context/AccessibilityContext'
 
 /**
  * Layout component that wraps the app content
@@ -12,8 +13,10 @@ import { useUser } from '../context/UserContext'
  */
 export default function Layout({ children, activeTab = 'home', onTabChange }) {
     const { isAdmin } = useUser()
+    const { isElderlyMode } = useAccessibility()
 
-    // Navigation items based on user role
+    // Navigation items based on user role and mode
+    // Elderly mode: simplified nav without leaderboard
     const navItems = isAdmin
         ? [
             { id: 'home', icon: Home, label: 'Home' },
@@ -21,12 +24,19 @@ export default function Layout({ children, activeTab = 'home', onTabChange }) {
             { id: 'admin', icon: Crown, label: 'Admin' },
             { id: 'profile', icon: User, label: 'Profile' },
         ]
-        : [
-            { id: 'home', icon: Home, label: 'Home' },
-            { id: 'leaderboard', icon: Trophy, label: 'Rank' },
-            { id: 'history', icon: History, label: 'History' },
-            { id: 'profile', icon: User, label: 'Profile' },
-        ]
+        : isElderlyMode
+            ? [
+                // Simplified nav for elderly - just essential features
+                { id: 'home', icon: Home, label: 'Home' },
+                { id: 'history', icon: History, label: 'History' },
+                { id: 'profile', icon: User, label: 'Profile' },
+            ]
+            : [
+                { id: 'home', icon: Home, label: 'Home' },
+                { id: 'leaderboard', icon: Trophy, label: 'Rank' },
+                { id: 'history', icon: History, label: 'History' },
+                { id: 'profile', icon: User, label: 'Profile' },
+            ]
 
     return (
         <div className="min-h-screen bg-background text-foreground">

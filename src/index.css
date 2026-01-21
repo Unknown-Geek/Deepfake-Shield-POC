@@ -89,107 +89,154 @@ a:hover {
 }
 
 /* ============================================
-   ELDERLY MODE - Large buttons and text
-   Applied via .elderly-mode class on body
+   ELDERLY MODE - High Contrast, Simple UI
+   Designed specifically for elderly users with:
+   - High contrast colors (dark bg, bright text)
+   - Much larger fonts and buttons
+   - Bold, clear typography
+   - Simplified interactions
    ============================================ */
 
-/* Base typography increases */
+/* High contrast base - dark navy with bright text */
 .elderly-mode {
-  font-size: 1.125rem;
-  /* 18px base instead of 16px */
-  line-height: 1.7;
+  --elderly-bg: #0a0e1a;
+  --elderly-text: #ffffff;
+  --elderly-text-bright: #ffeb3b;
+  /* Yellow for emphasis */
+  --elderly-success: #4ade80;
+  /* Brighter green */
+  --elderly-danger: #ff6b6b;
+  /* Brighter red */
+  --elderly-accent: #60a5fa;
+  /* Bright blue */
+
+  font-size: 1.25rem !important;
+  /* 20px base */
+  line-height: 1.8;
+  font-weight: 400;
+  background: var(--elderly-bg) !important;
 }
 
-/* Larger headings */
+/* All text becomes brighter and bolder */
+.elderly-mode * {
+  letter-spacing: 0.02em;
+}
+
 .elderly-mode h1 {
-  font-size: 1.75rem !important;
-  /* 28px */
+  font-size: 2rem !important;
+  /* 32px */
+  font-weight: 700 !important;
+  color: var(--elderly-text) !important;
 }
 
 .elderly-mode h2 {
-  font-size: 1.5rem !important;
-  /* 24px */
+  font-size: 1.75rem !important;
+  /* 28px */
+  font-weight: 600 !important;
 }
 
 .elderly-mode h3 {
-  font-size: 1.25rem !important;
-  /* 20px */
+  font-size: 1.5rem !important;
+  /* 24px */
+  font-weight: 600 !important;
 }
 
-/* Larger text for readability */
+/* All body text larger and clearer */
 .elderly-mode p,
 .elderly-mode span,
-.elderly-mode label {
+.elderly-mode label,
+.elderly-mode div {
   font-size: 1.125rem;
+  font-weight: 400;
 }
 
-/* Small text becomes normal sized */
+/* Small text becomes much larger */
 .elderly-mode .text-xs {
-  font-size: 0.9rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
 }
 
 .elderly-mode .text-sm {
-  font-size: 1rem !important;
+  font-size: 1.125rem !important;
 }
 
-/* Larger buttons with increased touch targets */
-.elderly-mode button,
-.elderly-mode .btn-elderly {
-  min-height: 56px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-size: 1.125rem;
+/* Muted text becomes more visible */
+.elderly-mode .text-muted {
+  color: #b0b8c8 !important;
 }
 
-/* Extra large primary action buttons */
+/* High contrast glass cards */
+.elderly-mode .glass {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  padding: 1.5rem !important;
+}
+
+/* MUCH larger buttons - easy to tap */
+.elderly-mode button {
+  min-height: 64px !important;
+  padding: 1rem 1.5rem !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  border-radius: 1rem !important;
+}
+
+/* Primary action buttons - HUGE */
+.elderly-mode .scan-btn-pulse,
 .elderly-mode .btn-primary-elderly {
-  min-height: 64px;
-  padding: 1.25rem 1.5rem;
-  font-size: 1.25rem;
-  font-weight: 500;
+  min-height: 80px !important;
+  padding: 1.5rem 2rem !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: #000 !important;
+  border: 3px solid #4ade80 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Larger icons in elderly mode */
-.elderly-mode .icon-elderly {
-  width: 28px;
-  height: 28px;
+/* Nav bar - larger and clearer */
+.elderly-mode nav {
+  padding: 0.75rem !important;
 }
 
-/* Larger nav bar items */
 .elderly-mode nav button {
-  padding: 0.75rem 1rem !important;
-  min-height: 64px;
+  padding: 1rem 1.25rem !important;
+  min-height: 72px !important;
 }
 
 .elderly-mode nav svg {
-  width: 24px !important;
-  height: 24px !important;
+  width: 28px !important;
+  height: 28px !important;
 }
 
 .elderly-mode nav span {
-  font-size: 0.85rem !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
 }
 
-/* Larger stat cards */
+/* Stats displayed very large */
 .elderly-mode .stat-value {
-  font-size: 2rem !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
 }
 
-/* Larger glass cards with more padding */
-.elderly-mode .glass {
-  padding: 1.25rem;
+/* High contrast icons */
+.elderly-mode svg {
+  stroke-width: 2.5 !important;
 }
 
 /* Larger input fields */
 .elderly-mode input,
 .elderly-mode select,
 .elderly-mode textarea {
-  min-height: 52px;
-  font-size: 1.125rem;
-  padding: 0.875rem 1rem;
+  min-height: 60px !important;
+  font-size: 1.25rem !important;
+  padding: 1rem 1.25rem !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-/* Toggle switch for elderly mode */
+/* Toggle switch - bigger and more visible */
 .toggle-switch {
   position: relative;
   width: 52px;
@@ -220,22 +267,43 @@ a:hover {
   transform: translateX(24px);
 }
 
-/* Elderly mode version - even bigger toggle */
+/* Elderly mode toggle - MUCH bigger */
 .elderly-mode .toggle-switch {
-  width: 64px;
-  height: 34px;
+  width: 80px !important;
+  height: 44px !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .elderly-mode .toggle-switch::after {
-  width: 28px;
-  height: 28px;
+  width: 36px !important;
+  height: 36px !important;
+  top: 3px !important;
 }
 
 .elderly-mode .toggle-switch.active::after {
-  transform: translateX(30px);
+  transform: translateX(36px) !important;
 }
 
-/* Pulsing scan button for elderly mode - highly visible */
+/* Pulsing scan button - even more dramatic in elderly mode */
+@keyframes elderly-scan-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 40px rgba(74, 222, 128, 0.5), 0 0 0 0 rgba(74, 222, 128, 0.7);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 0 60px rgba(74, 222, 128, 0.8), 0 0 100px rgba(74, 222, 128, 0.4);
+    transform: scale(1.02);
+  }
+}
+
+.elderly-mode .scan-btn-pulse {
+  animation: elderly-scan-pulse 1.5s ease-in-out infinite !important;
+}
+
+/* Normal mode pulse (subtler) */
 @keyframes scan-pulse {
 
   0%,
@@ -244,10 +312,29 @@ a:hover {
   }
 
   50% {
-    box-shadow: 0 0 50px rgba(16, 185, 129, 0.6), 0 0 80px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.6);
   }
 }
 
 .scan-btn-pulse {
   animation: scan-pulse 2s ease-in-out infinite;
+}
+
+/* Success/Danger colors brighter in elderly mode */
+.elderly-mode .text-success {
+  color: #4ade80 !important;
+}
+
+.elderly-mode .text-danger {
+  color: #ff6b6b !important;
+}
+
+.elderly-mode .bg-success\/10,
+.elderly-mode .bg-success\/20 {
+  background: rgba(74, 222, 128, 0.25) !important;
+}
+
+.elderly-mode .bg-danger\/10,
+.elderly-mode .bg-danger\/20 {
+  background: rgba(255, 107, 107, 0.25) !important;
 }

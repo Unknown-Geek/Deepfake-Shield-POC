@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, Coins, Flame, Shield, Award, Target, Zap, Eye, LogOut, ChevronRight, Accessibility } from 'lucide-react'
+import { User, Coins, Flame, Shield, Award, Target, Zap, Eye, LogOut, ChevronRight, Accessibility, Gift, Ticket } from 'lucide-react'
 import { cn } from '../lib/utils'
-import { getUserById, getScanLogsByUser } from '../db'
+import { getUserById, getScanLogsByUser, updateUserCoins } from '../db'
 import { useUser } from '../context/UserContext'
 import { useAccessibility } from '../context/AccessibilityContext'
 import { useToast } from './Toast'
@@ -15,6 +15,13 @@ const ACHIEVEMENTS = [
     { id: 'fake_finder', name: 'Fake Finder', description: 'Detect your first deepfake', icon: Zap, requirement: (stats) => stats.fakesFound >= 1 },
     { id: 'streak_3', name: 'Consistent', description: 'Maintain a 3-day streak', icon: Flame, requirement: (stats) => stats.streak >= 3 },
     { id: 'streak_7', name: 'Dedicated', description: 'Maintain a 7-day streak', icon: Award, requirement: (stats) => stats.streak >= 7 },
+]
+
+// Reward coupons - only shown in normal mode
+const REWARDS = [
+    { id: 'coffee', name: '☕ Free Coffee', description: '10% off at local cafes', cost: 50, color: 'amber' },
+    { id: 'shopping', name: '🛍️ Shopping Voucher', description: '₹100 off on ₹500+', cost: 100, color: 'purple' },
+    { id: 'pizza', name: '🍕 Pizza Deal', description: 'Buy 1 Get 1 Free', cost: 150, color: 'red' },
 ]
 
 /**
@@ -190,6 +197,76 @@ export default function Profile() {
                     })}
                 </div>
             </motion.div>
+
+            {/* Rewards Section - Only in Normal Mode */}
+            {!isElderlyMode && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35 }}
+                    className="mb-6"
+                >
+                    <div className="flex items-center gap-2 mb-3">
+                        <Gift className="w-4 h-4 text-amber-400" />
+                        <h3 className="text-sm font-medium">Rewards</h3>
+                    </div>
+
+                    <div className="space-y-3">
+                        {REWARDS.map((reward, index) => {
+                            const canAfford = stats.coins >= reward.cost
+
+                            const handleClaim = () => {
+                                if (canAfford && user?.id) {
+                                    updateUserCoins(user.id, -reward.cost)
+                                    fetchStats()
+                                    toast.success(`🎉 Claimed: ${reward.name}!`)
+                                } else {
+                                    toast.error(`Need ${reward.cost - stats.coins} more coins`)
+                                }
+                            }
+
+                            return (
+                                <motion.div
+                                    key={reward.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.4 + index * 0.05 }}
+                                    className={cn(
+                                        "glass rounded-2xl p-4 flex items-center gap-3",
+                                        `border-l-4 border-l-${reward.color}-500`
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
+                                        `bg-${reward.color}-500/20`
+                                    )}>
+                                        <Ticket className={`w-6 h-6 text-${reward.color}-400`} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium">{reward.name}</p>
+                                        <p className="text-xs text-muted">{reward.description}</p>
+                                    </div>
+                                    <button
+                                        onClick={handleClaim}
+                                        disabled={!canAfford}
+                                        className={cn(
+                                            "px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                                            canAfford
+                                                ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                                                : "bg-white/5 text-muted cursor-not-allowed"
+                                        )}
+                                    >
+                                        <span className="flex items-center gap-1">
+                                            <Coins className="w-4 h-4" />
+                                            {reward.cost}
+                                        </span>
+                                    </button>
+                                </motion.div>
+                            )
+                        })}
+                    </div>
+                </motion.div>
+            )}
 
             {/* Account Actions */}
             <motion.div
