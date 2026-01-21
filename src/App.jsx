@@ -185,11 +185,11 @@ function AppContent() {
             className={cn(
               "flex items-center justify-center transition-colors",
               isElderlyMode
-                ? "rounded-lg p-1 bg-white/10 hover:bg-white/20 text-white"
+                ? "rounded-lg px-1.5 py-0.5 bg-white/10 hover:bg-white/20 text-white"
                 : "w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 text-muted hover:text-foreground backdrop-blur-md"
             )}
           >
-            <LogOut size={isElderlyMode ? 10 : 18} />
+            <LogOut className={cn(isElderlyMode ? "w-2.5 h-2.5" : "w-[18px] h-[18px]")} />
           </motion.button>
         </div>
 
