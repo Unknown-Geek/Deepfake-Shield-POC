@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Shield, Users, Activity, TrendingUp, AlertTriangle, CheckCircle, Scan } from 'lucide-react'
 import { cn } from '../lib/utils'
-import { queryAll, queryOne } from '../db'
+import { queryAll, queryOne, getUnacknowledgedAlerts, acknowledgeAllAlerts } from '../db'
 import { useUser } from '../context/UserContext'
+import { useToast } from './Toast'
 
 /**
  * Admin Home Dashboard with overview stats
@@ -11,6 +12,8 @@ import { useUser } from '../context/UserContext'
  */
 export default function AdminHome() {
     const { user } = useUser()
+    const toast = useToast()
+    const lastAlertCount = useRef(0)
     const [stats, setStats] = useState({
         totalScans: 0,
         safeScans: 0,
@@ -21,7 +24,32 @@ export default function AdminHome() {
 
     useEffect(() => {
         fetchStats()
+        // Initial alert check
+        checkForNewAlerts()
     }, [])
+
+    // Poll for new alerts every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            checkForNewAlerts()
+        }, 3000)
+        return () => clearInterval(interval)
+    }, [])
+
+    const checkForNewAlerts = () => {
+        const unacknowledged = getUnacknowledgedAlerts()
+        if (unacknowledged.length > 0 && unacknowledged.length > lastAlertCount.current) {
+            // Show toast for each new alert
+            unacknowledged.slice(0, unacknowledged.length - lastAlertCount.current).forEach(alert => {
+                toast.error(`🚨 ALERT: ${alert.username} scanned a deepfake! ${alert.reason}`)
+            })
+            // Acknowledge all alerts after showing
+            acknowledgeAllAlerts()
+            // Refresh stats to update alerts list
+            fetchStats()
+        }
+        lastAlertCount.current = 0 // Reset after acknowledging
+    }
 
     const fetchStats = () => {
         // Get total scans

@@ -42,6 +42,22 @@ export async function initDatabase() {
     )
   `)
 
+    // Create admin_alerts table for real-time notifications
+    db.run(`
+    CREATE TABLE IF NOT EXISTS admin_alerts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      username TEXT NOT NULL,
+      scan_log_id INTEGER NOT NULL,
+      reason TEXT,
+      confidence REAL,
+      timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+      acknowledged INTEGER DEFAULT 0,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (scan_log_id) REFERENCES scan_logs(id)
+    )
+  `)
+
     // Seed dummy data
     seedDatabase()
 
@@ -205,4 +221,47 @@ export function updateUserStreak(userId, streak) {
         'UPDATE users SET streak = ? WHERE id = ?',
         [streak, userId]
     )
+}
+
+/**
+ * Create an admin alert when a deepfake is detected
+ * @param {Object} data - Alert data
+ * @returns {Object} Insert result
+ */
+export function createAdminAlert({ userId, username, scanLogId, reason, confidence }) {
+    return execute(
+        `INSERT INTO admin_alerts (user_id, username, scan_log_id, reason, confidence)
+         VALUES (?, ?, ?, ?, ?)`,
+        [userId, username, scanLogId, reason, confidence]
+    )
+}
+
+/**
+ * Get unacknowledged alerts for admin
+ * @returns {Array} Array of unacknowledged alerts
+ */
+export function getUnacknowledgedAlerts() {
+    return queryAll(
+        `SELECT * FROM admin_alerts WHERE acknowledged = 0 ORDER BY timestamp DESC`
+    )
+}
+
+/**
+ * Acknowledge an alert
+ * @param {number} alertId - Alert ID
+ * @returns {Object} Update result
+ */
+export function acknowledgeAlert(alertId) {
+    return execute(
+        'UPDATE admin_alerts SET acknowledged = 1 WHERE id = ?',
+        [alertId]
+    )
+}
+
+/**
+ * Acknowledge all alerts
+ * @returns {Object} Update result
+ */
+export function acknowledgeAllAlerts() {
+    return execute('UPDATE admin_alerts SET acknowledged = 1')
 }

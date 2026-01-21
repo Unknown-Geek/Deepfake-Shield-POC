@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Shield, ShieldCheck, ShieldAlert, Lock, RotateCcw, Sparkles, MessageCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '../lib/utils'
-import { addScanLog, updateUserCoins } from '../db'
+import { addScanLog, updateUserCoins, createAdminAlert } from '../db'
 import { useUser } from '../context/UserContext'
 import { useStats } from '../context/StatsContext'
 import { useToast } from './Toast'
@@ -137,12 +137,23 @@ export default function Scanner() {
 
         // Save to SQLite
         if (user?.id) {
-            addScanLog({
+            const scanLogResult = addScanLog({
                 userId: user.id,
                 result: isFake ? 'fake' : 'safe',
                 confidence: scanResult.confidence,
                 reason: scanResult.reason,
             })
+
+            // Create admin alert if fake detected
+            if (isFake && scanLogResult.lastInsertRowid) {
+                createAdminAlert({
+                    userId: user.id,
+                    username: user.username,
+                    scanLogId: scanLogResult.lastInsertRowid,
+                    reason: scanResult.reason,
+                    confidence: scanResult.confidence,
+                })
+            }
 
             // Award coins for scanning
             const coinsEarned = isFake ? 15 : 10
