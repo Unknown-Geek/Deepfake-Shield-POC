@@ -25,6 +25,8 @@ export default function ScanHistory() {
     useEffect(() => {
         if (user?.id) {
             const allLogs = getScanLogsByUser(user.id)
+            // Sort by timestamp descending (newest first)
+            allLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
             setLogs(allLogs)
         }
     }, [user?.id])
