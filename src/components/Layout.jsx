@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Scan, Crown, History, User } from 'lucide-react'
+import { Home, Scan, Crown, History, User, Trophy } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useUser } from '../context/UserContext'
 
@@ -7,7 +7,8 @@ import { useUser } from '../context/UserContext'
  * Layout component that wraps the app content
  * - Centers content on desktop (max-w-md mx-auto) to simulate mobile app experience
  * - Features a floating glass bottom navigation bar with blur effect
- * - Navigation: Home, Scan, History, Profile (+ Admin for admins)
+ * - Navigation: Home, Leaderboard, History, Profile for players
+ * - Navigation: Home, Scan, Admin, Profile for admins
  */
 export default function Layout({ children, activeTab = 'home', onTabChange }) {
     const { isAdmin } = useUser()
@@ -22,7 +23,7 @@ export default function Layout({ children, activeTab = 'home', onTabChange }) {
         ]
         : [
             { id: 'home', icon: Home, label: 'Home' },
-            { id: 'scan', icon: Scan, label: 'Scan' },
+            { id: 'leaderboard', icon: Trophy, label: 'Rank' },
             { id: 'history', icon: History, label: 'History' },
             { id: 'profile', icon: User, label: 'Profile' },
         ]

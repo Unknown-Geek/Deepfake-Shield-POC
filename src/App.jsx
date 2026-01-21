@@ -8,6 +8,7 @@ import AdminDashboard from './components/AdminDashboard'
 import AdminHome from './components/AdminHome'
 import Scanner from './components/Scanner'
 import ScanHistory from './components/ScanHistory'
+import Leaderboard from './components/Leaderboard'
 import Profile from './components/Profile'
 import { UserProvider, useUser } from './context/UserContext'
 import { ToastProvider, useToast } from './components/Toast'
@@ -128,13 +129,15 @@ function AppContent() {
         return <ScanPage />
       case 'history':
         return <ScanHistory />
+      case 'leaderboard':
+        return <Leaderboard />
       case 'profile':
         return <Profile />
       case 'admin':
-        return isAdmin ? <AdminDashboard /> : <PlayerDashboard />
+        return isAdmin ? <AdminDashboard /> : <PlayerDashboard onScanClick={() => setActiveTab('scan')} />
       case 'home':
       default:
-        return isAdmin ? <AdminHome /> : <PlayerDashboard />
+        return isAdmin ? <AdminHome /> : <PlayerDashboard onScanClick={() => setActiveTab('scan')} />
     }
   }
 

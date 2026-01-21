@@ -234,3 +234,20 @@ a:hover {
 .elderly-mode .toggle-switch.active::after {
   transform: translateX(30px);
 }
+
+/* Pulsing scan button for elderly mode - highly visible */
+@keyframes scan-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.6), 0 0 80px rgba(16, 185, 129, 0.3);
+  }
+}
+
+.scan-btn-pulse {
+  animation: scan-pulse 2s ease-in-out infinite;
+}

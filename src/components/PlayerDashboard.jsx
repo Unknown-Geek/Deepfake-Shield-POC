@@ -4,13 +4,15 @@ import { Coins, Flame, Scan, Target, Gift, ChevronRight } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { getUserById } from '../db'
 import { useUser } from '../context/UserContext'
+import { useAccessibility } from '../context/AccessibilityContext'
 
 /**
  * Player Dashboard with real stats from SQLite
  * Features: Stats header, SCAN NOW button with ripple, Daily Challenge
  */
-export default function PlayerDashboard() {
+export default function PlayerDashboard({ onScanClick }) {
     const { user } = useUser()
+    const { isElderlyMode } = useAccessibility()
     const [stats, setStats] = useState({ coins: 0, streak: 0 })
 
     // Fetch fresh stats from database
@@ -73,21 +75,33 @@ export default function PlayerDashboard() {
                 </div>
             </div>
 
-            {/* Hero - Quick Scan Prompt */}
+            {/* Hero - SCAN NOW Button */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
                 className="glass rounded-3xl p-6 mb-4 text-center"
             >
-                <div className="w-16 h-16 rounded-3xl bg-success/10 flex items-center justify-center mx-auto mb-4">
-                    <Scan className="w-8 h-8 text-success" />
-                </div>
-                <h2 className="text-lg font-semibold mb-2">Ready to Scan?</h2>
-                <p className="text-sm text-muted mb-4">
-                    Tap the Scan icon below to analyze images or videos for potential deepfakes
+                <motion.button
+                    onClick={onScanClick}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={cn(
+                        "w-full py-6 rounded-2xl font-semibold text-lg",
+                        "bg-gradient-to-r from-success to-emerald-400",
+                        "text-background flex items-center justify-center gap-3",
+                        "shadow-[0_0_30px_rgba(16,185,129,0.3)]",
+                        "transition-all duration-300",
+                        isElderlyMode && "scan-btn-pulse py-8 text-xl"
+                    )}
+                >
+                    <Scan className={cn("w-7 h-7", isElderlyMode && "w-9 h-9")} />
+                    SCAN NOW
+                </motion.button>
+                <p className="text-sm text-muted mt-4">
+                    Tap to analyze images or videos for deepfakes
                 </p>
-                <div className="flex items-center justify-center gap-2 text-xs text-success">
+                <div className="flex items-center justify-center gap-2 text-xs text-success mt-2">
                     <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     System Ready
                 </div>
