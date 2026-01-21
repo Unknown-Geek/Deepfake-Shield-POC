@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Shield, ShieldCheck, ShieldAlert, Lock, RotateCcw, Sparkles, MessageCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '../lib/utils'
@@ -34,8 +34,10 @@ const REAL_REASONS = [
 /**
  * Scanner component for deepfake detection
  * Features drop zone, animated progress, SQLite integration
+ * @param {File} initialFile - Optional file to start scanning immediately (for elderly mode)
+ * @param {Function} onScanComplete - Callback when scan is complete
  */
-export default function Scanner() {
+export default function Scanner({ initialFile, onScanComplete }) {
     const { user } = useUser()
     const { refreshStats } = useStats()
     const toast = useToast()
@@ -46,6 +48,14 @@ export default function Scanner() {
     const [progress, setProgress] = useState(0)
     const [result, setResult] = useState(null)
     const [fileName, setFileName] = useState('')
+
+    // Handle initial file from elderly mode direct scan
+    useEffect(() => {
+        if (initialFile && state === 'idle') {
+            handleFileSelect(initialFile)
+            onScanComplete?.()
+        }
+    }, [initialFile])
 
     const handleFileSelect = (file) => {
         if (!file) return

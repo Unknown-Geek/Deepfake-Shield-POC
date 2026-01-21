@@ -89,6 +89,13 @@ function AppContent() {
   const { isElderlyMode } = useAccessibility()
   const toast = useToast()
   const [activeTab, setActiveTab] = useState('home')
+  const [selectedFile, setSelectedFile] = useState(null)
+
+  // Handle file selection from PlayerDashboard (elderly mode direct scan)
+  const handleFileSelect = (file) => {
+    setSelectedFile(file)
+    setActiveTab('scan')
+  }
 
   // Reset to home when user changes
   useEffect(() => {
@@ -126,7 +133,7 @@ function AppContent() {
   const renderPage = () => {
     switch (activeTab) {
       case 'scan':
-        return <ScanPage />
+        return <ScanPage initialFile={selectedFile} onScanComplete={() => setSelectedFile(null)} />
       case 'history':
         return <ScanHistory />
       case 'leaderboard':
@@ -134,10 +141,10 @@ function AppContent() {
       case 'profile':
         return <Profile />
       case 'admin':
-        return isAdmin ? <AdminDashboard /> : <PlayerDashboard onScanClick={() => setActiveTab('scan')} />
+        return isAdmin ? <AdminDashboard /> : <PlayerDashboard onScanClick={() => setActiveTab('scan')} onFileSelect={handleFileSelect} />
       case 'home':
       default:
-        return isAdmin ? <AdminHome /> : <PlayerDashboard onScanClick={() => setActiveTab('scan')} />
+        return isAdmin ? <AdminHome /> : <PlayerDashboard onScanClick={() => setActiveTab('scan')} onFileSelect={handleFileSelect} />
     }
   }
 
@@ -197,14 +204,14 @@ function AppContent() {
  * Scan Page Component
  * Wraps Scanner with proper styling
  */
-function ScanPage() {
+function ScanPage({ initialFile, onScanComplete }) {
   return (
     <div className="pt-2">
       <div className="px-4 mb-4">
         <h1 className="text-xl font-semibold">Media Scanner</h1>
         <p className="text-sm text-muted">Analyze media for deepfakes</p>
       </div>
-      <Scanner />
+      <Scanner initialFile={initialFile} onScanComplete={onScanComplete} />
     </div>
   )
 }
